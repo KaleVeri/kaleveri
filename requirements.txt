@@ -1,0 +1,6 @@
+streamlit>=1.33
+pillow
+requests
+numpy
+matplotlib
+opencv-python          # opsiyonel: gürültü‑spektral işlemler için
