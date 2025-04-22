@@ -1,7 +1,9 @@
 # app.py
+import io
+
 import streamlit as st
 from PIL import Image
-import io, json
+
 from detection import detect_image_ai, plot_detection_result
 from nightshade_wrap import poison_image
 

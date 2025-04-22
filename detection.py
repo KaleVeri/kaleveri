@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 from io import BytesIO
 
+
 def detect_image_ai(img_bytes: bytes) -> dict:
     cfg = st.secrets["ai_detection"]
     resp = requests.post(
@@ -16,7 +17,21 @@ def detect_image_ai(img_bytes: bytes) -> dict:
     )
     data = resp.json()
     # Sightengine sonucundan özetlik çıkar
-    prob_ai = data["media"]["ai_generated"]["score"]
+    # Sonradan eklendi
+    # Debug çıktısı – terminalde göreceksin
+    print("📦 Gelen API verisi:\n", json.dumps(data, indent=2))
+
+    # Hata yakalama – veri gelmezse çökmemesi için
+    try:
+        # prob_ai = data["media"]["ai_generated"]["score"]
+        prob_ai = data["ai_generated"]["score"]
+
+    except KeyError:
+        prob_ai = 0.0
+        # st.error("API'den beklenen 'media' verisi gelmedi. Yapı değişmiş olabilir.")
+        st.error("API'den 'ai_generated' verisi alınamadı.")
+
+    # buraya kadar
     return {
         "raw": data,
         "prob_ai": prob_ai,
@@ -25,6 +40,7 @@ def detect_image_ai(img_bytes: bytes) -> dict:
             "AI Olasılığı": f"{prob_ai:.2%}"
         }
     }
+
 
 def plot_detection_result(res: dict):
     fig, ax = plt.subplots()

@@ -2,6 +2,7 @@ import numpy as np
 from PIL import Image
 import subprocess, tempfile, os, io
 
+
 # Seçenek 1 – resmi local Nightshade CLI’ye göndermek
 def poison_image(img: Image.Image) -> Image.Image:
     """
@@ -11,11 +12,11 @@ def poison_image(img: Image.Image) -> Image.Image:
     try:
         bin_path = os.getenv("NIGHTSHADE_BIN", "/usr/local/bin/nightshade")
         with tempfile.NamedTemporaryFile(suffix=".png") as tmp_in, \
-             tempfile.NamedTemporaryFile(suffix=".png") as tmp_out:
+                tempfile.NamedTemporaryFile(suffix=".png") as tmp_out:
             img.save(tmp_in.name)
             subprocess.run([bin_path, "--input", tmp_in.name,
-                                       "--output", tmp_out.name,
-                                       "--strength", "0.25"],
+                            "--output", tmp_out.name,
+                            "--strength", "0.25"],
                            check=True)
             return Image.open(tmp_out.name)
     except Exception:
