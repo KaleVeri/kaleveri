@@ -115,10 +115,7 @@ def detect_image_ai(img_bytes: bytes) -> dict:
     return {
         "raw": data,
         "prob_ai": prob_ai,
-        "summary": {
-            "Gerçeklik Skoru": f"{1 - prob_ai:.2%}",
-            "AI Olasılığı":   f"{prob_ai:.2%}",
-        },
+        
     }
 
 
