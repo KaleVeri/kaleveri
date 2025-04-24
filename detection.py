@@ -17,19 +17,19 @@ def detect_image_ai(img_bytes: bytes) -> dict:
     )
     data = resp.json()
     # Sightengine sonucundan özetlik çıkar
-    # Sonradan eklendi
+    # Sonradan eklendi(serra)
     # Debug çıktısı – terminalde göreceksin
     print("📦 Gelen API verisi:\n", json.dumps(data, indent=2))
 
     # Hata yakalama – veri gelmezse çökmemesi için
     try:
-        # prob_ai = data["media"]["ai_generated"]["score"]
-        prob_ai = data["ai_generated"]["score"]
+        # prob_ai = data["media"]["ai_generated"]["score"] eski hali
+        prob_ai = data["ai_generated"]["score"]#(serra)
 
     except KeyError:
         prob_ai = 0.0
-        # st.error("API'den beklenen 'media' verisi gelmedi. Yapı değişmiş olabilir.")
-        st.error("API'den 'ai_generated' verisi alınamadı.")
+        # st.error("API'den beklenen 'media' verisi gelmedi. Yapı değişmiş olabilir.") eski hali
+        st.error("API'den 'ai_generated' verisi alınamadı.") #serra's version
 
     # buraya kadar
     return {
