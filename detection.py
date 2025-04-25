@@ -77,56 +77,51 @@ def detect_image_ai(img_bytes: bytes) -> dict:
           "raw": {...}
         }
     """
-    cfg = st.secrets["ai_detection"]  # .streamlit/secrets.toml
+    cfg = st.secrets["ai_detection"]         # .streamlit/secrets.toml
 
-    with st.spinner('Görsel analiz ediliyor...'):
-        try:
-            resp = requests.post(
-                cfg.get("endpoint", "https://api.sightengine.com/1.0/check.json"),
-                data={
-                    "models": cfg.get("models", "genai"),
-                    "api_user": cfg["API_USER"],
-                    "api_secret": cfg["API_SECRET"],
-                },
-                files={"media": ("upload.jpg", img_bytes, "image/jpeg")},
-                timeout=API_TIMEOUT,
-            )
-        except requests.exceptions.RequestException as e:
-            st.error(f"API isteği sırasında hata oluştu: {e}")
-            st.stop()
+    resp = requests.post(
+        cfg.get("endpoint", "https://api.sightengine.com/1.0/check.json"),
+        data={
+            "models": cfg.get("models", "genai"),
+            "api_user": cfg["API_USER"],
+            "api_secret": cfg["API_SECRET"],
+        },
+        files={"media": ("upload.jpg", img_bytes, "image/jpeg")},
+        timeout=API_TIMEOUT,
+    )
 
-    if resp.status_code != 200:
-        st.error(f"API isteği başarısız! (Durum Kodu: {resp.status_code})")
-        st.stop()
-
+    # ---------------------------------
     # Yanıtı JSON’a çevir & debug logu
+    # ---------------------------------
     try:
         data = resp.json()
     except ValueError:
         st.error("API yanıtı JSON formatında değil!")
-        st.stop()
+        return {"raw": {}, "prob_ai": 0.0, "summary": {}}
 
-    # Ham veri terminal çıktısı
+    # Terminalde (veya Streamlit server log’unda) ham çıktıyı gör
     print("📦 Gelen API verisi:\n", json.dumps(data, indent=2))
 
+    # ---------------------------------
     # Skoru çıkart
+    # ---------------------------------
     try:
+        # Sightengine formatı:  data["type"]["ai_generated"]  → 0-1 float
         prob_ai = float(data["type"]["ai_generated"])
     except (KeyError, TypeError, ValueError):
         prob_ai = 0.0
         st.error("API yanıtında 'type.ai_generated' alanı bulunamadı!")
-        st.stop()
-
-    st.success("Görsel başarıyla analiz edildi.")
 
     return {
         "raw": data,
         "prob_ai": prob_ai,
+         "prob_real": 1.0 - prob_ai,  # 0–1 arası float
         "summary": {
             "Gerçeklik Skoru": f"{1 - prob_ai:.2%}",
-            "AI Olasılığı": f"{prob_ai:.2%}"
-        }
+            "AI Olasılığı":   f"{prob_ai:.2%}",
+        },
     }
+
 
 # ----------------------------------------------------------------------
 # Basit bar grafiği
@@ -134,8 +129,7 @@ def detect_image_ai(img_bytes: bytes) -> dict:
 def plot_detection_result(res: dict) -> None:
     prob_ai = res["prob_ai"]
     fig, ax = plt.subplots()
-    ax.bar(["Gerçek", "AI"], [1 - prob_ai, prob_ai])
+    ax.bar(["Gerçek", "AI"], [res["prob_real"], res["prob_ai"]])
     ax.set_ylim(0, 1)
     ax.set_ylabel("Olasılık")
-    ax.set_title("Görsel Gerçeklik Analizi")
     st.pyplot(fig)
