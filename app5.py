@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 # Sayfa Ayarı
-st.set_page_config(page_title="AI Image Guard", layout="wide", page_icon="🛡️")
+st.set_page_config(page_title="AI Image Guard", layout="wide", page_icon="🛡️ ")
 
 # CSS (Yukleme kutusu dahil)
 st.markdown("""
