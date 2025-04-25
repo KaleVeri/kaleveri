@@ -11,7 +11,7 @@ import plotly.express as px
 # Sayfa Ayarı
 st.set_page_config(page_title="AI Image Guard", layout="wide", page_icon="🛡️ ")
 
-# CSS (Yukleme kutusu dahil)
+# CSS (Yükleme kutusu dahil)
 st.markdown("""
     <style>
     .custom-upload-wrapper {
@@ -56,71 +56,38 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Sidebar
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Emojione_1F6E1.svg/2048px-Emojione_1F6E1.svg.png", width=60)
+st.sidebar.image(
+    "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Emojione_1F6E1.svg/2048px-Emojione_1F6E1.svg.png",
+    width=60
+)
 st.sidebar.title("🛡️ AI Image Guard")
-section = st.sidebar.radio("Fonksiyon Seçin", ["AI Görsel Tespiti", "Poison Pill Koruma"])
+section = st.sidebar.radio(
+    "Fonksiyon Seçin",
+    ["AI Görsel Tespiti", "Poison Pill Koruma"]
+)
 
-# Başlık
+# Başlık ve açıklama
 st.title("🎯 AI Görsel Tespiti & Koruma Platformu")
-st.markdown("Yapay zeka tarafından üretilmiş görselleri analiz et veya kendi görselini manipülasyona karşı koru.")
+st.markdown(
+    "Yapay zeka tarafından üretilmiş görselleri analiz et veya kendi görselini manipülasyona karşı koru."
+)
 
-# Sosyal medya gösterimi
-def show_social_post(link):
-    st.markdown("#### 🔗 Sosyal Medya Postu")
-    icon = "📷" if "instagram" in link else "🔗"
-    st.markdown(f"""
-        <div style='
-            background: #f0f0f0;
-            padding: 1rem;
-            border-left: 5px solid #3498db;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        '>
-            <b>{icon}</b> <a href="{link}" target="_blank">{link}</a>
-        </div>
-    """, unsafe_allow_html=True)
+# --- Grafik Fonksiyonları ---
 
-    if "instagram.com" in link:
-        embed_html = f"""
-        <blockquote class="instagram-media" data-instgrm-permalink="{link}" data-instgrm-version="14" 
-        style="width:100%"> </blockquote><script async src="//www.instagram.com/embed.js"></script>"""
-        components.html(embed_html, height=600)
-
-# Skor kutuları
 def show_score_summary(label_1, score_1, label_2, score_2):
     st.markdown(f"""
-    <div style='
-        display: flex; 
-        gap: 1rem; 
-        margin-top: 1rem;
-        flex-wrap: wrap;
-    '>
-        <div style='
-            background: #e74c3c; 
-            padding: 1rem 1.5rem; 
-            border-radius: 12px; 
-            color: white; 
-            flex: 1;
-            min-width: 200px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        '>
+    <div style='display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;'>
+        <div style='background: #e74c3c; padding: 1rem 1.5rem; border-radius: 12px; color: white; flex: 1; min-width: 200px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);'>
             <h4 style='margin: 0;'>{label_1}</h4>
             <h2 style='margin: 0;'>{score_1 * 100:.2f} %</h2>
         </div>
-        <div style='
-            background: #27ae60; 
-            padding: 1rem 1.5rem; 
-            border-radius: 12px; 
-            color: white;
-            flex: 1;
-            min-width: 200px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        '>
+        <div style='background: #27ae60; padding: 1rem 1.5rem; border-radius: 12px; color: white; flex: 1; min-width: 200px; box-shadow: 0 4px 8px rgba(0,0,0,0.05);'>
             <h4 style='margin: 0;'>{label_2}</h4>
             <h2 style='margin: 0;'>{score_2 * 100:.2f} %</h2>
         </div>
     </div>
     """, unsafe_allow_html=True)
+
 
 def interpret_score(score, mode):
     if mode == "detection":
@@ -137,6 +104,7 @@ def interpret_score(score, mode):
             st.info("ℹ️ Görsel kısmen korunmuş olabilir.")
         else:
             st.warning("⚠️ Görsel yeterince korunmamış olabilir.")
+
 
 def show_graphic_show(score_ai, score_real):
     st.subheader("🎨 Grafiksel Görsel Analiz")
@@ -184,9 +152,25 @@ def show_graphic_show(score_ai, score_real):
     ))
     fig3.update_layout(title="🔎 AI vs Gerçeklik Skoru", xaxis=dict(range=[0, 1]))
     st.plotly_chart(fig3, use_container_width=True)
+# --- Grafik Fonksiyonları Sonu ---
 
-# Sosyal medya
-post_link = st.text_input("📎 Sosyal Medya Post Linki", placeholder="https://instagram.com/p/...")
+# Sosyal medya gösterimi
+def show_social_post(link):
+    st.markdown("#### 🔗 Sosyal Medya Postu")
+    icon = "📷" if "instagram" in link else "🔗"
+    st.markdown(f"""
+        <div style='background: #f0f0f0; padding: 1rem; border-left: 5px solid #3498db; border-radius: 8px; margin-bottom: 1rem;'>
+            <b>{icon}</b> <a href=\"{link}\" target=\"_blank\">{link}</a>
+        </div>
+    """, unsafe_allow_html=True)
+
+    if "instagram.com" in link:
+        embed_html = f"""
+        <blockquote class=\"instagram-media\" data-instgrm-permalink=\"{link}\" data-instgrm-version=\"14\" style=\"width:100%\"> </blockquote><script async src=\"//www.instagram.com/embed.js\"></script>"""
+        components.html(embed_html, height=600)
+
+# Simülasyon bölümü
+post_link = st.text_input("📎 Sosyal Medya Post Linki", placeholder="https://instagram.com/p/... ")
 if post_link:
     show_social_post(post_link)
     if section == "AI Görsel Tespiti":
@@ -203,20 +187,10 @@ if post_link:
         show_score_summary("Koruma Skoru", score_protect, "Zayıflık Skoru", score_vuln)
         interpret_score(score_protect, "protection")
 
-# 📤 Görsel Yükleme Kutusu (tek kutu - çalışır Browse files)
+# 📤 Görsel Yükleme
 st.markdown("## 📤 Görsel Yükleme")
-st.markdown("""
-    <div class="custom-upload-wrapper">
-        <p>Dosyanızı buraya sürükleyin veya yüklemek için göz atın.</p>
-        <small>Limit 200MB per file • PNG, JPG, JPEG</small>
-        <div class="custom-upload-btn-container">
-            <label for="file-upload" class="custom-upload-btn">Browse files</label>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-file = st.file_uploader("", type=["png", "jpg", "jpeg"], key="file-upload", label_visibility="collapsed")
+file = st.file_uploader("📷 Görsel yükleyin (PNG/JPG)", type=["png", "jpg", "jpeg"])
 
-# Görsel işle
 if file:
     image = Image.open(file).convert("RGB")
     st.image(image, caption="🖼️ Yüklenen Görsel", use_container_width=True)
@@ -242,4 +216,4 @@ if file:
                 poisoned_img.save(buf, format="PNG")
             st.success("✅ Görsel başarıyla korundu!")
             st.image(poisoned_img, caption="🛡️ Korumalı Görsel", use_container_width=True)
-            st.download_button("⬇️ Korumalı Görseli İndir", data=buf.getvalue(), file_name="protected.png", mime="image/png")
+            st.download_button("⬇️ Korumalı Görselü İndir", data=buf.getvalue(), file_name="protected.png", mime="image/png")
