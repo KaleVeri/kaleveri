@@ -11,7 +11,7 @@ import plotly.express as px
 # Sayfa Ayarı
 st.set_page_config(page_title="AI Image Guard", layout="wide", page_icon="🛡️")
 
-# CSS (Yükleme kutusu dahil)
+# CSS (Yukleme kutusu dahil)
 st.markdown("""
     <style>
     .custom-upload-wrapper {
