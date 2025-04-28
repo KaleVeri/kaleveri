@@ -42,4 +42,3 @@ def detect_audio_ai(ref_bytes: bytes, test_bytes: bytes) -> dict:
         "score": sim,
         "raw":   {"cosine_similarity": sim},
     }
-
