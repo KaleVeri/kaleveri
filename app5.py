@@ -4,6 +4,7 @@ import io
 import random
 from detection import detect_image_ai
 from nightshade_wrap import poison_image
+from encryption import clip_defend
 import streamlit.components.v1 as components
 import plotly.graph_objects as go
 import plotly.express as px
@@ -211,7 +212,7 @@ if file:
         st.info("🧬 Görsel, yapay zeka modellerine karşı korumalı hale getirilecektir.")
         if st.button("🛡️ Görseli Koru"):
             with st.spinner("🔧 Görsel korunuyor..."):
-                poisoned_img = poison_image(image)
+                poisoned_img = clip_defend(image)
                 buf = io.BytesIO()
                 poisoned_img.save(buf, format="PNG")
             st.success("✅ Görsel başarıyla korundu!")

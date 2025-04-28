@@ -55,6 +55,7 @@ detection.py
 AI-üretimi görsel tespiti  –  Sightengine ‘genai’ modeli
 """
 
+"""
 import json
 import requests
 import matplotlib.pyplot as plt
@@ -68,15 +69,7 @@ API_TIMEOUT = 15  # saniye – istek kilitlenmesin diye
 # Ana fonksiyon
 # ----------------------------------------------------------------------
 def detect_image_ai(img_bytes: bytes) -> dict:
-    """
-    Yüklenen görseli Sightengine 'genai' modeli ile analiz eder.
-    Dönen sözlük:
-        {
-          "prob_ai": 0.83,
-          "summary": {...},
-          "raw": {...}
-        }
-    """
+   
     cfg = st.secrets["ai_detection"]         # .streamlit/secrets.toml
 
     resp = requests.post(
@@ -130,6 +123,79 @@ def plot_detection_result(res: dict) -> None:
     prob_ai = res["prob_ai"]
     fig, ax = plt.subplots()
     ax.bar(["Gerçek", "AI"], [res["prob_real"], res["prob_ai"]])
+    ax.set_ylim(0, 1)
+    ax.set_ylabel("Olasılık")
+    st.pyplot(fig)
+"""
+
+
+# detection.py
+
+# detection.py
+import json
+import requests
+import matplotlib.pyplot as plt
+import streamlit as st
+
+API_TIMEOUT = 15  # saniye
+
+def detect_image_ai(img_bytes: bytes) -> dict:
+    cfg = st.secrets["ai_detection"]
+    resp = requests.post(
+        cfg["endpoint"],
+        data={
+            "models":   cfg["models"],
+            "api_user": cfg["API_USER"],
+            "api_secret": cfg["API_SECRET"],
+        },
+        files={"media": ("upload.jpg", img_bytes, "image/jpeg")},
+        timeout=API_TIMEOUT,
+    )
+    data = resp.json()
+    # — debug
+    print("📦 Gelen API verisi:\n", json.dumps(data, indent=2))
+
+    # AI <-> Real
+    ai_score   = float(data["type"]["ai_generated"])
+    real_score = 1.0 - ai_score
+
+    # Photo vs Illustration
+    photo_score        = data["type"].get("photo", 0.0)
+    illustration_score = data["type"].get("illustration", 0.0)
+
+    # Quality
+    quality_obj   = data.get("quality", {})
+    quality_score = quality_obj.get("score", 0.0)
+
+    # Properties
+    sharpness  = data.get("sharpness", 0.0)
+    brightness = data.get("brightness", 0.0)
+    contrast   = data.get("contrast", 0.0)
+    colors     = data.get("colors", {}).get("dominant", {}).get("hex", "#000000")
+
+    # Deepfake
+    deepfake_score = data.get("deepfake", {}).get("score", 0.0)
+
+    return {
+        "raw":                data,
+        "prob_ai":            ai_score,
+        "prob_real":          real_score,
+        "photo_score":        photo_score,
+        "illustration_score": illustration_score,
+        "quality_score":      quality_score,
+        "sharpness":          sharpness,
+        "brightness":         brightness,
+        "contrast":           contrast,
+        "dominant_color":     colors,
+        "deepfake_score":     deepfake_score,
+    }
+
+def plot_detection_result(res: dict) -> None:
+    """
+    Basit bar grafiği: Real vs AI
+    """
+    fig, ax = plt.subplots()
+    ax.bar(["Real", "AI"], [res["prob_real"], res["prob_ai"]])
     ax.set_ylim(0, 1)
     ax.set_ylabel("Olasılık")
     st.pyplot(fig)
