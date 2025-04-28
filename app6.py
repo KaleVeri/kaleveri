@@ -89,12 +89,10 @@ if st.session_state.page is None:
             set_page("AI Görsel Tespiti")
             st.rerun()
 
-
     with col2:
         if st.button("🧪 Poison Pill Koruma", use_container_width=True):
             set_page("Poison Pill Koruma")
             st.rerun()
-
 
     # Nasıl Çalışır bölümü
     st.markdown("## 🔧 Uygulama Nasıl Çalışır?")
@@ -149,6 +147,7 @@ def show_score_summary(label_1, score_1, label_2, score_2):
         </div>
     </div>
     """, unsafe_allow_html=True)
+
 
 def interpret_score(score, mode):
     if mode == "detection":
