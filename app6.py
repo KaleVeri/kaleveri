@@ -220,9 +220,8 @@ def show_graphic_show(score_ai, score_real):
 def show_social_post(link):
     st.markdown("#### 🔗 Sosyal Medya Postu")
     icon = "📷" if "instagram" in link else "🔗"
-    st.markdown(f"""
-        <div style='background: #f0f0f0; padding: 1rem; border-left: 5px solid #3498db; border-radius: 8px; margin-bottom: 1rem;'>
-            <b>{icon}</b> <a href=\"{link}\" target=\"_blank\">{link}</a>
+    st.markdown(f""" <div style='background: #f0f0f0; padding: 1rem; border-left: 5px solid #3498db; border-radius: 
+    8px; margin-bottom: 1rem;'> <b>{icon}</b> <a href=\"{link}\" target=\"_blank\">{link}</a>
         </div>
     """, unsafe_allow_html=True)
 
