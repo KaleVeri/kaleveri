@@ -25,7 +25,7 @@ def set_page(page_name):
 
 
 if st.session_state.page is None:
-    st.title("🎯 AI Görsel Tespiti & Koruma Platformu")
+    st.title("🛡️ AI Görsel Tespiti & Koruma Platformu")
     st.markdown("Yapay zeka tarafından üretilmiş görselleri analiz et veya kendi görselini manipülasyona karşı koru.")
 
     st.markdown("""
@@ -233,10 +233,10 @@ if section == "AI Görsel Tespiti":
 
     secim = st.sidebar.selectbox(
         "İşlem Türü Seçin",
-        ["📂 Belgeden Yükle", "🌐 Sosyal Medya Gönderi", "🎤 Ses Kaydı Yükle"]
+        ["📂 Opsiyon Seçiniz", "🌐 Sosyal Medya Gönderi", "🎤 Ses Kaydı Yükle"]
     )
 
-    if secim == "📂 Belgeden Yükle":
+    if secim == "📂 Opsiyon Seçiniz":
         st.header("📂 Belgeden Görsel Yükle")
         file = st.file_uploader("Görsel seçin (PNG, JPG)", type=["png", "jpg", "jpeg"])
         if file:

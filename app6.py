@@ -34,7 +34,7 @@ if st.session_state.page is None:
         flex-wrap: wrap;
         justify-content: center;
         }
-        
+
         div.stButton > button {
             background: #f9f9f9;
             height: 260px;
